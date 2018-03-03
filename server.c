@@ -1,3 +1,10 @@
+/**
+ * @brief Provide a simple code to describe the functional
+ * 
+ * @file server.c
+ * @author Justin Lu (pcjustin)
+ * @date 2018-03-03
+ */
 #include <fcntl.h>
 #include <limits.h>
 #include <stdio.h>
@@ -12,8 +19,6 @@
 #include "io_element.h"
 #include "io_stack.h"
 #include "list.h"
-
-#define BUFFER_SIZE PIPE_BUF
 
 void send_back(PIO_STACK pio_stack, PIO_ELEMENT pio_element, size_t pio_element_size) {
 	char* input_buffer = get_input_buffer(pio_element);
@@ -42,22 +47,19 @@ void do_something(void* arg) {
 	}
 
 	char buffer[BUFFER_SIZE];
+	memset(buffer, 0x0, BUFFER_SIZE);
 
 	for (;;) {
+		size_t buffer_size = 0;
 		memset(buffer, 0x0, BUFFER_SIZE);
-		size_t buffer_size = receive_last_buffer(pio_stack, buffer);
 
-		if (buffer_size == 0) {
-			sleep(1);
-			continue;
-		}
+		while ((buffer_size = receive_last_buffer(pio_stack, buffer)) == 0);
 
 		send_back(pio_stack, (PIO_ELEMENT)buffer, buffer_size);
 	}
 }
 
 int main(int argc, char** argv) {
-	printf("server is running\n");
 	PIO_STACK pio_stack = create_io_stack(SERVER_WRITE);
 	pthread_t thread;
 	pthread_create(&thread, NULL, (void*)do_something, (void*)pio_stack);

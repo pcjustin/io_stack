@@ -1,3 +1,10 @@
+/**
+ * @brief Provide a simple code to describe the functional
+ * 
+ * @file client.c
+ * @author Justin Lu (pcjustin)
+ * @date 2018-03-03
+ */
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
@@ -12,23 +19,6 @@
 
 #include "io_stack.h"
 #include "io_element.h"
-
-#define DEBUG
-#define CLIENT_FIFO "/tmp/client_fifo"
-#define SERVER_FIFO "/tmp/server_fifo"
-#define BUFFER_SIZE PIPE_BUF
-
-static int __io_terminate = 0;
-static void sig_handler(int signo) {
-	__io_terminate = 1;
-}
-
-static void register_signal(void) {
-	struct sigaction act;
-	act.sa_handler = &sig_handler;
-	sigaction(SIGINT, &act, NULL);
-	sigaction(SIGTERM, &act, NULL);
-}
 
 void do_something(void* arg) {
 	PIO_STACK pio_stack = (PIO_STACK)arg;
@@ -51,22 +41,16 @@ void do_something(void* arg) {
 		release_io_element(pio_element);
 		memset(buffer, 0x0, BUFFER_SIZE);
 
-		while ((buffer_size = receive_buffer(pio_stack, sequence_id, buffer)) == 0);
+		while ((buffer_size = receive_buffer(sequence_id, buffer)) == 0);
 
 		print_io_element((PIO_ELEMENT)buffer);
-
-		if (__io_terminate) {
-			break;
-		}
 	}
 }
 
 int main(int argc, char** argv) {
-	printf("client is running\n");
 	PIO_STACK pio_stack = create_io_stack(CLIENT_WRITE);
 	pthread_t thread = NULL;
 	pthread_create(&thread, NULL, (void*)do_something, (void*)pio_stack);
-	// do_something(pio_stack);
 	run_io_stack(pio_stack);
 	destroy_io_stack(pio_stack);
 	return 0;

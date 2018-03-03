@@ -1,3 +1,10 @@
+/**
+ * @brief Implement a I/O Stack with named pipe
+ * 
+ * @file io_stack.c
+ * @author Justin Lu (pcjustin)
+ * @date 2018-03-03
+ */
 #include <fcntl.h>
 #include <limits.h>
 #include <signal.h>
@@ -13,10 +20,6 @@
 #include "io_stack.h"
 #include "list.h"
 
-#define CLIENT_FIFO "/tmp/client_fifo"
-#define SERVER_FIFO "/tmp/server_fifo"
-#define BUFFER_SIZE PIPE_BUF
-
 static list(IO_ELEMENT, list);
 static int __io_terminate = 0;
 static void sig_handler(int signo) {
@@ -27,7 +30,6 @@ static void register_signal(void) {
 	struct sigaction act;
 	act.sa_handler = &sig_handler;
 	sigaction(SIGINT, &act, NULL);
-	sigaction(SIGTERM, &act, NULL);
 }
 
 PIO_STACK allocate_io_stack(void) {
@@ -220,10 +222,12 @@ size_t receive_last_buffer(PIO_STACK pio_stack, void* receive_buffer) {
 	return pio_element_size;
 }
 
-size_t receive_buffer(PIO_STACK pio_stack, int sequence_id, void* receive_buffer) {
+size_t receive_buffer(int sequence_id, void* receive_buffer) {
 	size_t pio_element_size = 0;
 
-	while (list_length(list) == 0);
+	if (list_length(list) == 0) {
+		return 0;
+	}
 
 	list_each_elem(list, elem) {
 		PIO_ELEMENT pio_element = (PIO_ELEMENT)elem;

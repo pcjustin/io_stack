@@ -1,3 +1,10 @@
+/**
+ * @brief Process a element for I/O Stack
+ * 
+ * @file io_element.c
+ * @author Justin Lu (pcjustin)
+ * @date 2018-03-03
+ */
 #include <stdio.h>
 
 #include "io_stack.h"
