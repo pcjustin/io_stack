@@ -1,6 +1,6 @@
 /**
  * @brief Implement a I/O Stack with named pipe
- * 
+ *
  * @file io_stack.c
  * @author Justin Lu (pcjustin)
  * @date 2018-03-03
@@ -105,7 +105,6 @@ PIO_STACK create_io_stack(int flag) {
 		}
 	}
 
-	list(IO_ELEMENT, list);
 	pio_stack->status = flag;
 	pio_stack->client_fd = client_fd;
 	pio_stack->server_fd = server_fd;

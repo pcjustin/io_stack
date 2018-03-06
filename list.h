@@ -156,13 +156,13 @@ typedef struct list_element list_element;
 	     _##e = _##e##_prev, _##e##_prev = list_elem_prev (_##e))            \
 		if (!memcpy (&e, _##e, sizeof (e))) {} else                      \
 
-/* The only macro that has to use a statement expression.  As list_find has to
- * be able to create an l-value from value but also has to work as an
- * expression, I can't see a way to accomplish this without.
- *
- * Since MSVC doesn't support statement expressions, a template function is
- * used instead.
- */
+			/* The only macro that has to use a statement expression.  As list_find has to
+			 * be able to create an l-value from value but also has to work as an
+			 * expression, I can't see a way to accomplish this without.
+			 *
+			 * Since MSVC doesn't support statement expressions, a template function is
+			 * used instead.
+			 */
 
 #ifndef _MSC_VER
 #define list_find(list, value) ({                                          \
@@ -173,16 +173,16 @@ typedef struct list_element list_element;
 		elem;                                                                   \
 	})
 #else
-template <class T> inline T* list_find(T* list, T value) {
-	list_elem(list) elem = list_elem_front(list);
+			template <class T> inline T* list_find(T* list, T value) {
+		list_elem(list) elem = list_elem_front(list);
 
-	for(; elem; elem = list_elem_next(elem))
-		if(*elem == value) {
-			return elem;
-		}
+		for(; elem; elem = list_elem_next(elem))
+			if(*elem == value) {
+				return elem;
+			}
 
-	return 0;
-}
+		return 0;
+	}
 #endif
 
 #define list_remove(list, value)                                              \
@@ -210,22 +210,22 @@ template <class T> inline T* list_find(T* list, T value) {
 	list_elem_remove (list_elem_back (list))                                   \
 
 #ifdef __cplusplus
-extern "C"
-{
+	extern "C"
+	{
 #endif
 
-void          _list_push(list_head**, size_t value_size, void* value);
-void          _list_push_front(list_head**, size_t value_size, void* value);
-list_element* _list_front(list_head*);
-list_element* _list_back(list_head*);
-list_element* _list_next(list_element*);
-list_element* _list_prev(list_element*);
-size_t        _list_length(list_head*);
-void          _list_remove(list_element*);
-void          _list_clear(list_head**, size_t value_size);
+	void          _list_push(list_head**, size_t value_size, void* value);
+	void          _list_push_front(list_head**, size_t value_size, void* value);
+	list_element* _list_front(list_head*);
+	list_element* _list_back(list_head*);
+	list_element* _list_next(list_element*);
+	list_element* _list_prev(list_element*);
+	size_t        _list_length(list_head*);
+	void          _list_remove(list_element*);
+	void          _list_clear(list_head**, size_t value_size);
 
 #ifdef __cplusplus
-}
+	}
 #endif
 
 #endif

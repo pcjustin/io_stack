@@ -1,6 +1,6 @@
 /**
  * @brief Provide a simple code to describe the functional
- * 
+ *
  * @file server.c
  * @author Justin Lu (pcjustin)
  * @date 2018-03-03
@@ -20,12 +20,11 @@
 #include "io_stack.h"
 #include "list.h"
 
-void send_back(PIO_STACK pio_stack, PIO_ELEMENT pio_element, size_t pio_element_size) {
+static void send_back(PIO_STACK pio_stack, PIO_ELEMENT pio_element, size_t pio_element_size) {
 	char* input_buffer = get_input_buffer(pio_element);
 	char* output_buffer = get_output_buffer(pio_element);
 	PIO_ELEMENT send_io_element = allocate_io_element(pio_element->input_buffer_size,
 	                              pio_element->input_buffer_size);
-	size_t send_io_element_size = get_io_element_size(send_io_element);
 	send_io_element->status = pio_element->status;
 	send_io_element->sequence_id = pio_element->sequence_id;
 	send_io_element->input_buffer_size = pio_element->input_buffer_size;
@@ -39,7 +38,7 @@ void send_back(PIO_STACK pio_stack, PIO_ELEMENT pio_element, size_t pio_element_
 	release_io_element(send_io_element);
 }
 
-void do_something(void* arg) {
+static void do_something(void* arg) {
 	PIO_STACK pio_stack = (PIO_STACK)arg;
 
 	if (!pio_stack) {

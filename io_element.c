@@ -1,6 +1,6 @@
 /**
  * @brief Process a element for I/O Stack
- * 
+ *
  * @file io_element.c
  * @author Justin Lu (pcjustin)
  * @date 2018-03-03
@@ -78,8 +78,8 @@ void print_io_element(PIO_ELEMENT pio_element) {
 	int sequence_id = pio_element->sequence_id;
 	printf("status: %d\n", status);
 	printf("sequence_id: 0x%x\n", sequence_id);
-	printf("input_buffer_size: %zd\n", input_buffer_size);
-	printf("output_buffer_size: %zd\n", output_buffer_size);
+	printf("input_buffer_size: %d\n", input_buffer_size);
+	printf("output_buffer_size: %d\n", output_buffer_size);
 
 	if (input_buffer_size > 0) {
 		print_buffer("input_buffer", input_buffer, input_buffer_size);
@@ -107,8 +107,8 @@ void print_queue(PIO_ELEMENT list) {
 		int output_buffer_size = value.output_buffer_size;
 		char* input_buffer = get_input_buffer(&value);
 		char* output_buffer = get_input_buffer(&value);
-		printf("input_buffer_size: %zd\n", input_buffer_size);
-		printf("output_buffer_size: %zd\n", output_buffer_size);
+		printf("input_buffer_size: %d\n", input_buffer_size);
+		printf("output_buffer_size: %d\n", output_buffer_size);
 
 		if (input_buffer_size > 0) {
 			print_buffer("input_buffer", input_buffer, input_buffer_size);
