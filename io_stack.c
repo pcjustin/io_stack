@@ -203,7 +203,9 @@ void destroy_io_stack(PIO_STACK pio_stack) {
 size_t receive_last_buffer(PIO_STACK pio_stack, void* receive_buffer) {
 	size_t pio_element_size = 0;
 
-	while (list_length(list) == 0);
+	if (list_length(list) == 0) {
+		return 0;
+	}
 
 	list_each_elem(list, elem) {
 		PIO_ELEMENT pio_element = (PIO_ELEMENT)elem;

@@ -51,10 +51,13 @@ static void do_something(void* arg) {
 	for (;;) {
 		size_t buffer_size = 0;
 		memset(buffer, 0x0, BUFFER_SIZE);
+		buffer_size = receive_last_buffer(pio_stack, buffer);
 
-		while ((buffer_size = receive_last_buffer(pio_stack, buffer)) == 0);
+		if (buffer_size > 0) {
+			send_back(pio_stack, (PIO_ELEMENT)buffer, buffer_size);
+		}
 
-		send_back(pio_stack, (PIO_ELEMENT)buffer, buffer_size);
+		sleep(1);
 	}
 }
 
