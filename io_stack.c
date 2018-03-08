@@ -20,7 +20,7 @@
 #include "io_stack.h"
 #include "list.h"
 
-static list(IO_ELEMENT, list);
+static list(PIO_ELEMENT, list);
 static int __io_terminate = 0;
 static void sig_handler(int signo) {
 	__io_terminate = 1;
@@ -141,8 +141,7 @@ void run_io_stack(PIO_STACK pio_stack) {
 					PIO_ELEMENT pio_element = (PIO_ELEMENT)malloc(buffer_size);
 					memset(pio_element, 0x0, buffer_size);
 					memcpy(pio_element, buffer, buffer_size);
-					list_push(list, *pio_element);
-					release_io_element(pio_element);
+					list_push(list, pio_element);
 				}
 			}
 
@@ -153,8 +152,7 @@ void run_io_stack(PIO_STACK pio_stack) {
 					PIO_ELEMENT pio_element = (PIO_ELEMENT)malloc(buffer_size);
 					memset(pio_element, 0x0, buffer_size);
 					memcpy((void*)pio_element, (void*)buffer, buffer_size);
-					list_push(list, *pio_element);
-					release_io_element(pio_element);
+					list_push(list, pio_element);
 				}
 			}
 		}
@@ -210,12 +208,13 @@ size_t receive_last_buffer(PIO_STACK pio_stack, void* receive_buffer) {
 	}
 
 	list_each_elem(list, elem) {
-		PIO_ELEMENT pio_element = (PIO_ELEMENT)elem;
+		PIO_ELEMENT pio_element = (PIO_ELEMENT) * elem;
 
 		if ((pio_stack->status == CLIENT_WRITE && pio_element->status == SERVER_WRITE) ||
 		    (pio_stack->status == SERVER_WRITE && pio_element->status == CLIENT_WRITE)) {
 			pio_element_size = get_io_element_size(pio_element);
 			memcpy(receive_buffer, pio_element, pio_element_size);
+			release_io_element(pio_element);
 			list_elem_remove(elem);
 			break;
 		}
@@ -233,11 +232,12 @@ size_t receive_buffer(int sequence_id, void* receive_buffer) {
 	}
 
 	list_each_elem(list, elem) {
-		PIO_ELEMENT pio_element = (PIO_ELEMENT)elem;
+		PIO_ELEMENT pio_element = (PIO_ELEMENT) * elem;
 
 		if (pio_element->sequence_id == sequence_id) {
 			pio_element_size = get_io_element_size(pio_element);
 			memcpy(receive_buffer, pio_element, pio_element_size);
+			release_io_element(pio_element);
 			list_elem_remove(elem);
 			break;
 		}
