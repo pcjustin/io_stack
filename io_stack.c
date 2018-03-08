@@ -139,6 +139,7 @@ void run_io_stack(PIO_STACK pio_stack) {
 
 				if (buffer_size > 0) {
 					PIO_ELEMENT pio_element = (PIO_ELEMENT)malloc(buffer_size);
+					memset(pio_element, 0x0, buffer_size);
 					memcpy(pio_element, buffer, buffer_size);
 					list_push(list, *pio_element);
 					release_io_element(pio_element);
@@ -150,6 +151,7 @@ void run_io_stack(PIO_STACK pio_stack) {
 
 				if (buffer_size > 0) {
 					PIO_ELEMENT pio_element = (PIO_ELEMENT)malloc(buffer_size);
+					memset(pio_element, 0x0, buffer_size);
 					memcpy((void*)pio_element, (void*)buffer, buffer_size);
 					list_push(list, *pio_element);
 					release_io_element(pio_element);
