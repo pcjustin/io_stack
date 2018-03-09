@@ -32,6 +32,13 @@ static void register_signal(void) {
 	sigaction(SIGINT, &act, NULL);
 }
 
+static int push_element_to_queue(char* buffer, size_t buffer_size) {
+	PIO_ELEMENT pio_element = (PIO_ELEMENT)malloc(buffer_size);
+	memset(pio_element, 0x0, buffer_size);
+	memcpy(pio_element, buffer, buffer_size);
+	list_push(list, pio_element);
+}
+
 PIO_STACK allocate_io_stack(void) {
 	size_t malloc_size = sizeof(PIO_STACK) + sizeof(int) * 2;
 	PIO_STACK pio_stack = (PIO_STACK)malloc(malloc_size);
@@ -138,10 +145,7 @@ void run_io_stack(PIO_STACK pio_stack) {
 				buffer_size = read(client_fd, &buffer, BUFFER_SIZE);
 
 				if (buffer_size > 0) {
-					PIO_ELEMENT pio_element = (PIO_ELEMENT)malloc(buffer_size);
-					memset(pio_element, 0x0, buffer_size);
-					memcpy(pio_element, buffer, buffer_size);
-					list_push(list, pio_element);
+					push_element_to_queue(buffer, buffer_size);
 				}
 			}
 
@@ -149,10 +153,7 @@ void run_io_stack(PIO_STACK pio_stack) {
 				buffer_size = read(server_fd, &buffer, BUFFER_SIZE);
 
 				if (buffer_size > 0) {
-					PIO_ELEMENT pio_element = (PIO_ELEMENT)malloc(buffer_size);
-					memset(pio_element, 0x0, buffer_size);
-					memcpy((void*)pio_element, (void*)buffer, buffer_size);
-					list_push(list, pio_element);
+					push_element_to_queue(buffer, buffer_size);
 				}
 			}
 		}
