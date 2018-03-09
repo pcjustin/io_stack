@@ -32,7 +32,7 @@ static void register_signal(void) {
 	sigaction(SIGINT, &act, NULL);
 }
 
-static int push_element_to_queue(char* buffer, size_t buffer_size) {
+static void push_element_to_queue(char* buffer, size_t buffer_size) {
 	PIO_ELEMENT pio_element = (PIO_ELEMENT)malloc(buffer_size);
 	memset(pio_element, 0x0, buffer_size);
 	memcpy(pio_element, buffer, buffer_size);
